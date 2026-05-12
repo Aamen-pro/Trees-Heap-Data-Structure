@@ -50,12 +50,12 @@ public:
     }
 
     // Return the balance factor = height(left) - height(right)
-    // Positive  → left-heavy
-    // Negative  → right-heavy
+    // Positive  → right-heavy
+    // Negative  → left-heavy
     // |factor| <= 1 → balanced
     int getBalance(Node* node) {
         if (node == nullptr) return 0;
-        return getHeight(node->left) - getHeight(node->right);
+        return getHeight(node->right) - getHeight(node->left);
     }
 
     void updateHeight(Node* node) {
@@ -71,9 +71,11 @@ public:
 
     // Right rotation (LL case)
     Node* rightRotate(Node* y) {
+        // x is the New sub root , and y is the node where the impalnce occured 
         Node* x  = y->left;
+        // T2 is the right subtree of x , to but it in the left of y after rotation
         Node* T2 = x->right;
-
+        // rotate left
         x->right = y;
         y->left  = T2;
 
@@ -85,7 +87,9 @@ public:
 
     // Left rotation (RR case)
     Node* leftRotate(Node* x) {
+        // x is the New sub root , and y is the node where the impalnce occured 
         Node* y  = x->right;
+        // T2 is the left subtree of y , to but it in the right of x after rotation
         Node* T2 = y->left;
 
         y->left  = x;
@@ -99,18 +103,19 @@ public:
 
     // Left-Right rotation (LR case)
     Node* leftRightRotate(Node* node) {
+        // first do left rotaiton for the left side of the old root then do right rotaiton for the old root
         node->left = leftRotate(node->left);
         return rightRotate(node);
     }
 
     // Right-Left rotation (RL case)
     Node* rightLeftRotate(Node* node) {
+        // first do right rotaiton for the right side of the old root then do left rotaiton for the old root
         node->right = rightRotate(node->right);
         return leftRotate(node);
     }
 
     // ── Insert Operation ──────────────────────────────────────
-
     Node* insert(Node* node, Book book) {
         // Normal BST insert
         if (node == nullptr)
@@ -130,19 +135,19 @@ public:
         int balance = getBalance(node);
 
         // LL Case
-        if (balance > 1 && book.id < node->left->book.id)
+        if (balance < -1 && book.id < node->left->book.id)
             return rightRotate(node);
 
         // RR Case
-        if (balance < -1 && book.id > node->right->book.id)
+        if (balance > 1 && book.id > node->right->book.id)
             return leftRotate(node);
 
         // LR Case
-        if (balance > 1 && book.id > node->left->book.id)
+        if (balance < -1 && book.id > node->left->book.id)
             return leftRightRotate(node);
 
         // RL Case
-        if (balance < -1 && book.id < node->right->book.id)
+        if (balance > 1 && book.id < node->right->book.id)
             return rightLeftRotate(node);
 
         return node;
@@ -168,17 +173,20 @@ public:
             node->right = deleteNode(node->right, id);
         else {
             // Node found — handle 0 or 1 child
-            if (node->left == nullptr || node->right == nullptr) {
-                Node* temp = node->left ? node->left : node->right;
-
-                if (temp == nullptr) {
-                    temp = node;
-                    node = nullptr;
-                } else {
-                    *node = *temp;
-                }
-                delete temp;
-            } else {
+            
+            if(node->left==NULL){
+                Node* temp=node->right;
+                delete node;
+                return temp;
+            }
+            
+            else if (node->right ==NULL){
+                Node* temp=node->left;
+                delete node;
+                return temp;
+            }
+            //case 3
+            else {
                 // Two children: replace with in-order successor
                 Node* temp   = minValue(node->right);
                 node->book   = temp->book;
@@ -231,29 +239,26 @@ public:
 
     // Inorder: prints books sorted by ID
     void inorder(Node* node) {
-        if (node != nullptr) {
-            inorder(node->left);
-            cout << "  [" << node->book.id << "] "
-                    << node->book.title
-                    << " - " << node->book.author << endl;
-            inorder(node->right);
-        }
+        if (node == nullptr) return;
+        inorder(node->left);
+        cout << "  [" << node->book.id << "] "
+                << node->book.title
+                << " - " << node->book.author << endl;
+        inorder(node->right);
     }
 
     void preorder(Node* node) {
-        if (node != nullptr) {
-            cout << "  [" << node->book.id << "] " << node->book.title << endl;
-            preorder(node->left);
-            preorder(node->right);
-        }
+        if (node == nullptr) return;
+        cout << "  [" << node->book.id << "] " << node->book.title << endl;
+        preorder(node->left);
+        preorder(node->right);
     }
 
     void postorder(Node* node) {
-        if (node != nullptr) {
-            postorder(node->left);
-            postorder(node->right);
-            cout << "  [" << node->book.id << "] " << node->book.title << endl;
-        }
+        if (node == nullptr) return;
+        postorder(node->left);
+        postorder(node->right);
+        cout << "  [" << node->book.id << "] " << node->book.title << endl;
     }
 
     void bfs(Node* node) {
@@ -261,15 +266,18 @@ public:
 
         queue<Node*> q;
         q.push(node);
-
         while (!q.empty()) {
-            Node* current = q.front();
-            q.pop();
-            cout << "  [" << current->book.id << "] "
-                << current->book.title << endl;
+            int levelSize = q.size();
+            for(int i=0; i < levelSize; i++){
+                Node* current = q.front();
+                q.pop();
+                cout << "  [" << current->book.id << "] "
+                    << current->book.title << endl;
 
-            if (current->left)  q.push(current->left);
-            if (current->right) q.push(current->right);
+                if (current->left)  q.push(current->left);
+                if (current->right) q.push(current->right);
+            }
+            cout<<endl;
         }
     }
 
