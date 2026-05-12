@@ -92,10 +92,10 @@ int main() {
         cout << "\nNext patient to treat:\n";
 
         cout << "[ Name: " << top.name
-             << " , ID: " << top.id
-             << " , Severity: " << top.severity
-             << " , Arrival Time: " << top.arrivalTime
-             << " ]\n";
+            << " , ID: " << top.id
+            << " , Severity: " << top.severity
+            << " , Arrival Time: " << top.arrivalTime
+            << " ]\n";
     }
 
     cout << "\n====================================================\n";
@@ -117,10 +117,10 @@ int main() {
         h.pop();
 
         cout << "[ Treated -> Name: " << treated.name
-             << " , ID: " << treated.id
-             << " , Severity: " << treated.severity
-             << " , Arrival Time: " << treated.arrivalTime
-             << " ]\n";
+            << " , ID: " << treated.id
+            << " , Severity: " << treated.severity
+            << " , Arrival Time: " << treated.arrivalTime
+            << " ]\n";
     }
 
     cout << "\n====================================================\n";
