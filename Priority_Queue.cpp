@@ -24,9 +24,7 @@ public:
     }
 };
 
-void updateSeverity(priority_queue<Patient, vector<Patient>, ComparePatient>& pq,
-                    int patientId,
-                    int newSeverity) {
+void updateSeverity(priority_queue<Patient, vector<Patient>, ComparePatient>& pq, int patientId, int newSeverity) {
 
     vector<Patient> temp;
     bool found = false;
@@ -44,7 +42,6 @@ void updateSeverity(priority_queue<Patient, vector<Patient>, ComparePatient>& pq
         temp.push_back(p);
     }
 
-    // push back again
     for (auto &p : temp) {
         pq.push(p);
     }
@@ -58,7 +55,6 @@ void print(priority_queue<Patient, vector<Patient>, ComparePatient> pq) {
     while (!pq.empty()) {
         Patient x = pq.top();
         pq.pop();
-        cout << endl;
         cout << "[ Name: " << x.name   << " , ";
         cout << "ID: "     << x.id     << " , ";
         cout << "Arrival Time: " << x.arrivalTime << " O'clock , ";
@@ -68,6 +64,7 @@ void print(priority_queue<Patient, vector<Patient>, ComparePatient> pq) {
 }
 
 int main() {
+
     priority_queue<Patient, vector<Patient>, ComparePatient> h;
 
     vector<Patient> patients = {
@@ -80,10 +77,56 @@ int main() {
         {19,"ziad",3,18}, {20,"jana",2,19}, {21,"hamza",1,20}
     };
 
-    for (auto &p : patients){
-        h.push(p);}
+    for (Patient p : patients) {
+        h.push(p);
+    }
 
+    cout << "All Patients:\n";
     print(h);
-     
+
+    cout << "\n====================================================\n";
+
+    if (!h.empty()) {
+        Patient top = h.top();
+
+        cout << "\nNext patient to treat:\n";
+
+        cout << "[ Name: " << top.name
+             << " , ID: " << top.id
+             << " , Severity: " << top.severity
+             << " , Arrival Time: " << top.arrivalTime
+             << " ]\n";
+    }
+
+    cout << "\n====================================================\n";
+
+    updateSeverity(h, 1, 10);   
+    updateSeverity(h, 11, 9);   
+    updateSeverity(h, 21, 8);   
+
+    cout << "\nPatients After Updates:\n";
+    print(h);
+
+    cout << "\n====================================================\n";
+
+    cout << "\nTreating 5 patients:\n";
+
+    for (int i = 0; i < 5 && !h.empty(); i++) {
+
+        Patient treated = h.top();
+        h.pop();
+
+        cout << "[ Treated -> Name: " << treated.name
+             << " , ID: " << treated.id
+             << " , Severity: " << treated.severity
+             << " , Arrival Time: " << treated.arrivalTime
+             << " ]\n";
+    }
+
+    cout << "\n====================================================\n";
+
+    cout << "\nRemaining Patients:\n";
+    print(h);
+
     return 0;
 }
