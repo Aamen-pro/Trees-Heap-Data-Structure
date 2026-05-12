@@ -24,6 +24,35 @@ public:
     }
 };
 
+void updateSeverity(priority_queue<Patient, vector<Patient>, ComparePatient>& pq,
+                    int patientId,
+                    int newSeverity) {
+
+    vector<Patient> temp;
+    bool found = false;
+
+    // extract all patients
+    while (!pq.empty()) {
+        Patient p = pq.top();
+        pq.pop();
+
+        if (p.id == patientId) {
+            p.severity = newSeverity;
+            found = true;
+        }
+
+        temp.push_back(p);
+    }
+
+    // push back again
+    for (auto &p : temp) {
+        pq.push(p);
+    }
+
+    if (!found) {
+        cout << "Patient not found\n";
+    }
+}
 
 void print(priority_queue<Patient, vector<Patient>, ComparePatient> pq) {
     while (!pq.empty()) {
@@ -41,23 +70,20 @@ void print(priority_queue<Patient, vector<Patient>, ComparePatient> pq) {
 int main() {
     priority_queue<Patient, vector<Patient>, ComparePatient> h;
 
-    Patient p(1,"ayman",1,7);
-    Patient c(2,"esmail",9,8);
-    Patient d(3,"emam",9,8);
-    Patient e(4,"hamed",7,4);
-    h.push(p);
-    h.push(c);
-    h.push(d);
+    vector<Patient> patients = {
+        {1,"ayman",1,7}, {2,"esmail",9,8}, {3,"emam",9,8},
+        {4,"hamed",7,4}, {5,"mohamed",5,2}, {6,"ali",10,1},
+        {7,"youssef",6,3}, {8,"kareem",8,6}, {9,"hassan",4,5},
+        {10,"omar",3,9}, {11,"nour",2,10}, {12,"salma",7,11},
+        {13,"fatma",9,12}, {14,"tarek",6,13}, {15,"ahmed",5,14},
+        {16,"sara",8,15}, {17,"mostafa",10,16}, {18,"layla",4,17},
+        {19,"ziad",3,18}, {20,"jana",2,19}, {21,"hamza",1,20}
+    };
+
+    for (auto &p : patients){
+        h.push(p);}
+
     print(h);
-    
-    h.pop();
-    
-    print(h);
-    
-    h.push(e);
-    
-        
-    print(h);
-    
+     
     return 0;
 }
